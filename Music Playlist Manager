@@ -1,0 +1,44 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        LinkedList<string> playlist = new LinkedList<string>();
+        SortedList<int, string> ratingList = new SortedList<int, string>();
+        SortedDictionary<string, string> artistMap = new SortedDictionary<string, string>();
+
+        playlist.AddLast("Song A");
+        playlist.AddLast("Song B");
+        playlist.AddFirst("Song C");
+
+        playlist.Remove("Song B");
+
+        ratingList.Add(5, "Song A");
+        ratingList.Add(3, "Song C");
+        ratingList.Add(4, "Song D");
+
+        artistMap.Add("Arijit Singh", "Song A");
+        artistMap.Add("Atif Aslam", "Song C");
+        artistMap.Add("Darshan Raval", "Song D");
+
+        Console.WriteLine("Playlist:");
+        foreach (var song in playlist)
+        {
+            Console.WriteLine(song);
+        }
+
+        Console.WriteLine("\nSongs by Rating:");
+        foreach (var item in ratingList)
+        {
+            Console.WriteLine($"{item.Key} → {item.Value}");
+        }
+
+        Console.WriteLine("\nSongs by Artist:");
+        foreach (var item in artistMap)
+        {
+            Console.WriteLine($"{item.Key} → {item.Value}");
+        }
+    }
+}

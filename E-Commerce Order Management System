@@ -1,0 +1,106 @@
+using System;
+using System.Collections.Generic;
+
+// Order class
+class Order
+{
+    public int OrderId;
+    public string ProductName;
+    public double Price;
+    public int CustomerId;
+
+    public Order(int id, string product, double price, int custId)
+    {
+        OrderId = id;
+        ProductName = product;
+        Price = price;
+        CustomerId = custId;
+    }
+}
+
+// Customer class
+class Customer
+{
+    public int CustomerId;
+    public string Name;
+
+    public Customer(int id, string name)
+    {
+        CustomerId = id;
+        Name = name;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // 1. List<Order>
+        List<Order> orders = new List<Order>();
+
+        // 2. Dictionary<int, Customer>
+        Dictionary<int, Customer> customers = new Dictionary<int, Customer>();
+
+        // 3. HashSet<string>
+        HashSet<string> categories = new HashSet<string>();
+
+        // 4. Queue<Order>
+        Queue<Order> orderQueue = new Queue<Order>();
+
+        // 5. Stack<string>
+        Stack<string> statusHistory = new Stack<string>();
+
+        // Adding customers
+        customers.Add(1, new Customer(1, "Chetan"));
+        customers.Add(2, new Customer(2, "Rahul"));
+
+        // Adding orders
+        Order o1 = new Order(101, "Laptop", 50000, 1);
+        Order o2 = new Order(102, "Phone", 20000, 2);
+
+        orders.Add(o1);
+        orders.Add(o2);
+
+        // Add categories (unique)
+        categories.Add("Electronics");
+        categories.Add("Electronics"); // duplicate won't be added
+        categories.Add("Mobile");
+
+        // Add to queue
+        orderQueue.Enqueue(o1);
+        orderQueue.Enqueue(o2);
+
+        // Update order
+        o1.Price = 48000;
+
+        // Remove order
+        orders.Remove(o2);
+
+        // Process orders (FIFO)
+        Console.WriteLine("Processing Orders:");
+        while (orderQueue.Count > 0)
+        {
+            Order current = orderQueue.Dequeue();
+            Console.WriteLine($"Processing Order ID: {current.OrderId}");
+
+            // Track status
+            statusHistory.Push($"Order {current.OrderId} Placed");
+            statusHistory.Push($"Order {current.OrderId} Shipped");
+            statusHistory.Push($"Order {current.OrderId} Delivered");
+        }
+
+        // Show status history (LIFO)
+        Console.WriteLine("\nOrder Status History:");
+        while (statusHistory.Count > 0)
+        {
+            Console.WriteLine(statusHistory.Pop());
+        }
+
+        // Display categories
+        Console.WriteLine("\nUnique Categories:");
+        foreach (var cat in categories)
+        {
+            Console.WriteLine(cat);
+        }
+    }
+}

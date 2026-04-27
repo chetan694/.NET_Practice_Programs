@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Queue<string> taskQueue = new Queue<string>();
+        Stack<string> undoStack = new Stack<string>();
+        List<string> allTasks = new List<string>();
+        SortedDictionary<int, string> priorityTasks = new SortedDictionary<int, string>();
+        HashSet<string> uniqueTasks = new HashSet<string>();
+
+        AddTask("Backup", allTasks, taskQueue, uniqueTasks);
+        AddTask("Update", allTasks, taskQueue, uniqueTasks);
+        AddTask("Scan", allTasks, taskQueue, uniqueTasks);
+        AddTask("Backup", allTasks, taskQueue, uniqueTasks);
+
+        priorityTasks.Add(2, "Update");
+        priorityTasks.Add(1, "Backup");
+        priorityTasks.Add(3, "Scan");
+
+        Console.WriteLine("Executing Tasks:");
+        while (taskQueue.Count > 0)
+        {
+            string task = taskQueue.Dequeue();
+            Console.WriteLine(task);
+            undoStack.Push(task);
+        }
+
+        Console.WriteLine("\nUndo Last Task:");
+        if (undoStack.Count > 0)
+        {
+            Console.WriteLine(undoStack.Pop());
+        }
+
+        Console.WriteLine("\nPriority Tasks:");
+        foreach (var item in priorityTasks)
+        {
+            Console.WriteLine($"{item.Key} → {item.Value}");
+        }
+
+        Console.WriteLine("\nAll Tasks:");
+        foreach (var task in allTasks)
+        {
+            Console.WriteLine(task);
+        }
+    }
+
+    static void AddTask(string task, List<string> list, Queue<string> queue, HashSet<string> set)
+    {
+        if (set.Add(task))
+        {
+            list.Add(task);
+            queue.Enqueue(task);
+        }
+        else
+        {
+            Console.WriteLine($"Duplicate Task Ignored: {task}");
+        }
+    }
+}

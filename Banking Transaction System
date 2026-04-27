@@ -1,0 +1,90 @@
+using System;
+using System.Collections.Generic;
+
+class Transaction
+{
+    public string TransactionId;
+    public double Amount;
+
+    public Transaction(string id, double amount)
+    {
+        TransactionId = id;
+        Amount = amount;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        List<Transaction> history = new List<Transaction>();
+        Dictionary<string, double> accounts = new Dictionary<string, double>();
+        Queue<Transaction> pending = new Queue<Transaction>();
+        Stack<Transaction> rollback = new Stack<Transaction>();
+        HashSet<string> transactionIds = new HashSet<string>();
+
+        accounts["A101"] = 5000;
+        accounts["A102"] = 3000;
+
+        Transaction t1 = new Transaction("T1", 1000);
+        Transaction t2 = new Transaction("T2", 500);
+        Transaction t3 = new Transaction("T1", 700);
+
+        EnqueueTransaction(t1, pending, transactionIds);
+        EnqueueTransaction(t2, pending, transactionIds);
+        EnqueueTransaction(t3, pending, transactionIds);
+
+        while (pending.Count > 0)
+        {
+            Transaction t = pending.Dequeue();
+
+            if (accounts["A101"] >= t.Amount)
+            {
+                accounts["A101"] -= t.Amount;
+                accounts["A102"] += t.Amount;
+
+                history.Add(t);
+                rollback.Push(t);
+
+                Console.WriteLine($"Processed: {t.TransactionId}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed: {t.TransactionId}");
+            }
+        }
+
+        Console.WriteLine("\nBalances:");
+        foreach (var acc in accounts)
+        {
+            Console.WriteLine($"{acc.Key} → {acc.Value}");
+        }
+
+        Console.WriteLine("\nRollback Last Transaction:");
+        if (rollback.Count > 0)
+        {
+            Transaction last = rollback.Pop();
+            accounts["A101"] += last.Amount;
+            accounts["A102"] -= last.Amount;
+            Console.WriteLine($"Rolled back: {last.TransactionId}");
+        }
+
+        Console.WriteLine("\nFinal Balances:");
+        foreach (var acc in accounts)
+        {
+            Console.WriteLine($"{acc.Key} → {acc.Value}");
+        }
+    }
+
+    static void EnqueueTransaction(Transaction t, Queue<Transaction> pending, HashSet<string> ids)
+    {
+        if (ids.Add(t.TransactionId))
+        {
+            pending.Enqueue(t);
+        }
+        else
+        {
+            Console.WriteLine($"Duplicate Transaction Blocked: {t.TransactionId}");
+        }
+    }
+}
